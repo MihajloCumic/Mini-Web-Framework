@@ -19,8 +19,8 @@ public class ControllerContainer {
     }
 
     public void createController(Class<?> controllerType){
-        Controller controller = Controller.create(controllerType);
         if(!isControllerUnique(controllerType)) return;
+        Controller controller = Controller.create(controllerType);
         this.controllers.add(controller);
     }
 

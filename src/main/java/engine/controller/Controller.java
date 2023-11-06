@@ -26,11 +26,12 @@ public class Controller {
         Method[] methods = this.controllerType.getDeclaredMethods();
 
         for(Method method: methods){
+            System.out.println(method.getName() + "****************");
             Path pathAnnotation = method.getAnnotation(Path.class);
             if(pathAnnotation == null) continue;
             String httpMethodName = this.AllowedHTTPMethodAnnotationName(method);
             if(httpMethodName == null){
-                System.out.println("There must be http method annotation with path annotation.");
+                System.out.println("\tThere must be http method annotation with path annotation.");
                 continue;
             }
             String path = pathAnnotation.path();
