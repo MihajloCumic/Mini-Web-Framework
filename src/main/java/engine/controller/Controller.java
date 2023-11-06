@@ -31,7 +31,7 @@ public class Controller {
             String httpMethodName = this.AllowedHTTPMethodAnnotationName(method);
             if(httpMethodName == null){
                 System.out.println("There must be http method annotation with path annotation.");
-                return;
+                continue;
             }
             String path = pathAnnotation.path();
             this.pathToControllerMethod.put(httpMethodName + ":" + path, method);
