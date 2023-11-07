@@ -35,6 +35,7 @@ public class Controller {
                 continue;
             }
             String path = pathAnnotation.path();
+            //Dodati proveru da li vec postoji putanja sa http metodom u kkontroleru
             this.pathToControllerMethod.put(httpMethodName + ":" + path, method);
 
         }
