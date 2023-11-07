@@ -1,9 +1,12 @@
 package controller.tests;
 
+import annotations.Controller;
 import annotations.GET;
 import annotations.POST;
 import annotations.Path;
 
+
+@Controller
 public class MojKontroler1 {
     public MojKontroler1(){}
 

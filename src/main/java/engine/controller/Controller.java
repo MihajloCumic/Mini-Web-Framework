@@ -26,7 +26,6 @@ public class Controller {
         Method[] methods = this.controllerType.getDeclaredMethods();
 
         for(Method method: methods){
-            System.out.println(method.getName() + "****************");
             Path pathAnnotation = method.getAnnotation(Path.class);
             if(pathAnnotation == null) continue;
             String httpMethodName = this.AllowedHTTPMethodAnnotationName(method);
