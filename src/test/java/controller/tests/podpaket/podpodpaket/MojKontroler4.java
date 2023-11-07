@@ -20,6 +20,14 @@ public class MojKontroler4 {
     }
 
     public void provera(){
-        System.out.println("Ispis iz kontrolra4");
+       this.dependency2.ispisi();
+    }
+
+    public Depencdency2 getDependency2() {
+        return dependency2;
+    }
+
+    public Dependency3 getDependency3() {
+        return dependency3;
     }
 }

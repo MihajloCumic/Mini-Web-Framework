@@ -14,4 +14,8 @@ public class Dependency1 {
     public void ispisi(){
         this.depencdency2.ispisi();
     }
+
+    public Depencdency2 getDepencdency2() {
+        return depencdency2;
+    }
 }

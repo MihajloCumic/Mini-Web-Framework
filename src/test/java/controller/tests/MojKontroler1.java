@@ -33,4 +33,12 @@ public class MojKontroler1 {
 
     @POST
     public void metoda4MojKontroler1(){}
+
+    public Dependency1 getDependency1() {
+        return dependency1;
+    }
+
+    public Dependency3 getDependency3() {
+        return dependency3;
+    }
 }
