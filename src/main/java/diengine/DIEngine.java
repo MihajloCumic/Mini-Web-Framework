@@ -33,28 +33,35 @@ public class DIEngine {
             Field[] controllerFields = controller.getControllerType().getDeclaredFields();
             System.out.println(controller.getControllerType().getSimpleName());
 
-            //traverseThroughDependencies(controllerFields, controller.getControllerType());
             traverseThroughDependencies(controllerFields, controller.getController());
         }
     }
 
-    private Object traverseThroughDependencies(Field[] fields, Object object) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        //Object dependency = clazz.getDeclaredConstructor().newInstance();
+    private void traverseThroughDependencies(Field[] fields, Object object) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+
         for(Field field: fields){
             Annotation annotation = field.getAnnotation(Autowired.class);
             if(annotation == null) continue;
             Field[] fieldFields = field.getType().getDeclaredFields();
             Object fieldObject = field.getType().getDeclaredConstructor().newInstance();
-            Object fieldDependency = traverseThroughDependencies(fieldFields, fieldObject);
-            if(fieldDependency == null) continue;
-            //System.out.println(field.isAccessible());
+            traverseThroughDependencies(fieldFields, fieldObject);
 
-            field.setAccessible(true);
-            field.set(object, fieldDependency);
+            injectDependency(field, object, fieldObject);
 
 
         }
-        return object;
+        return;
+    }
+
+    private void injectDependency(Field field, Object instance, Object dependecy) throws IllegalAccessException {
+        boolean fieldsAccessability = field.isAccessible();
+        field.setAccessible(true);
+
+        field.set(instance, dependecy);
+
+        field.setAccessible(fieldsAccessability);
+
+
     }
 
 
