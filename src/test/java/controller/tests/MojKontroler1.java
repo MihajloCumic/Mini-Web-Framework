@@ -1,14 +1,20 @@
 package controller.tests;
 
-import annotations.Controller;
-import annotations.GET;
-import annotations.POST;
-import annotations.Path;
+import annotations.*;
+import controller.tests.dependencies.Dependency1;
 
 
 @Controller
 public class MojKontroler1 {
+
+    @Autowired
+    private Dependency1 dependency1;
+
     public MojKontroler1(){}
+
+    public void ispisi1(){
+        this.dependency1.ispisi();
+    }
 
     @Path(path="/metoda1/MojKontroler1")
     @GET

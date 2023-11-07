@@ -4,6 +4,7 @@ package engine.controller;
 import annotations.Path;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,10 +12,17 @@ import java.util.Map;
 public class Controller {
     private final Class<?> controllerType;
     private final Map<String, Method> pathToControllerMethod;
+    private  Object controller;
 
     private Controller(Class<?> controllerType){
         this.controllerType = controllerType;
         this.pathToControllerMethod = new HashMap<>();
+        try {
+            this.controller = controllerType.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
         this.mapPathsToControllerMethods();
     }
 
@@ -34,7 +42,8 @@ public class Controller {
                 continue;
             }
             String path = pathAnnotation.path();
-            //Dodati proveru da li vec postoji putanja sa http metodom u kkontroleru
+            //Dodati proveru da li vec postoji putanja sa http metodom u kontroleru
+            //i dali vec neki kontroler ima tu istu hhtp metodu sa putanjom
             this.pathToControllerMethod.put(httpMethodName + ":" + path, method);
 
         }
@@ -60,5 +69,9 @@ public class Controller {
 
     public Map<String, Method> getPathToControllerMethod() {
         return pathToControllerMethod;
+    }
+
+    public Object getController() {
+        return controller;
     }
 }
