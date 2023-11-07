@@ -7,8 +7,11 @@ import controller.tests.dependencies.Dependency1;
 @Controller
 public class MojKontroler1 {
 
+    private String name = "mojkontroler1";
     @Autowired
     private Dependency1 dependency1;
+    @Autowired
+    private Dependency3 dependency3;
 
     public MojKontroler1(){}
 
