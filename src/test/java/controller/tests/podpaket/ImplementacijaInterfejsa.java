@@ -11,7 +11,10 @@ public class ImplementacijaInterfejsa implements InterfaceDependency{
     private String name = "IMplementacijaInterfejsa";
     @Autowired
     private Dependency3 dependency3;
-    public ImplementacijaInterfejsa(){}
+
+    public ImplementacijaInterfejsa(){
+        System.out.println("Inicijalizovao je ImplementacijuInterfejsa");
+    }
     @Override
     public void interfaceIspis() {
         System.out.println("Ispis iz " + this.name);

@@ -2,6 +2,7 @@ package diengine;
 
 import annotations.Autowired;
 import annotations.Compoenent;
+import annotations.Qualifier;
 import annotations.Service;
 import dependencycontainer.DependencyContainer;
 import engine.controller.Controller;
@@ -54,20 +55,21 @@ public class DIEngine {
         for(Field field: fields){
             Annotation annotation = field.getAnnotation(Autowired.class);
             if(annotation == null) continue;
-            Field[] fieldFields = field.getType().getDeclaredFields();
-            //Object fieldObject = field.getType().getDeclaredConstructor().newInstance();
+            //Field[] fieldFields = field.getType().getDeclaredFields();
+
             Object existingService = serviceIsAlreadyInitialized(field);
             Object fieldObject;
 
             if(existingService == null){
                 fieldObject = initializeDependency(field);
+
+                if(fieldObject == null) continue;
+                Field[] fieldFields = fieldObject.getClass().getDeclaredFields();
+
                 traverseThroughDependencies(fieldFields, fieldObject);
             }else{
                 fieldObject = existingService;
             }
-            //Object fieldObject = initializeDependency(field);
-
-
 
             injectDependency(field, object, fieldObject);
 
@@ -78,20 +80,19 @@ public class DIEngine {
 
     private void injectDependency(Field field, Object instance, Object dependecy) throws IllegalAccessException {
         boolean fieldsAccessability = field.isAccessible();
+
         field.setAccessible(true);
-
         field.set(instance, dependecy);
-
         field.setAccessible(fieldsAccessability);
-
-
     }
 
     private Object initializeDependency(Field field) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-
         Class<?> fieldClass = field.getType();
-        if(fieldClass.isInterface() || Modifier.isAbstract(fieldClass.getModifiers())){
-            System.out.println(field.getName());
+        //|| Modifier.isAbstract(fieldClass.getModifiers()) dodati za abstract klase
+        if(fieldClass.isInterface()){
+            System.out.println("Interfejs->->" + field.getName());
+            return initalizeInterface(field);
+
         }
         Annotation service = fieldClass.getDeclaredAnnotation(Service.class);
         if(service != null){
@@ -103,6 +104,20 @@ public class DIEngine {
             return componentObject;
         }
         return null;
+    }
+
+    private Object initalizeInterface(Field field) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        Qualifier qualifierAnnotation = field.getDeclaredAnnotation(Qualifier.class);
+        if(qualifierAnnotation == null){
+            System.out.println("Mora da ima qualifier uz sebe.");
+            return null;
+        }
+        String qualifier = qualifierAnnotation.value();
+        String interfaceName = field.getType().getName();
+        Class<?> implementationClass = this.dependencyContainer.getImplementationClassByQualifier(qualifier, interfaceName);
+        if(implementationClass == null) return null;
+        Object implementation = implementationClass.getDeclaredConstructor().newInstance();
+        return implementation;
     }
 
     private Object initalizeSingletonDependency(Field field) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {

@@ -44,18 +44,21 @@ public class DependencyContainer {
     }
 
 
-    private boolean isImplementationOfInterface(Class<?> implementation, Class<?> interfaceClass) {
-//        String implementationName = implementation.getName();
-//        String interfaceName = interfaceClass.getName();
-//
-//        Class<?>[] interfaces = implementation.getInterfaces();
-//        for(Class<?> iface: interfaces){
-//            if(iface.getName().equals(interfaceName)){
-//                return true;
-//            }
-//        }
-//        return false;
-        return false;
+    public Class<?> getImplementationClassByQualifier(String qualifier, String interfaceName) {
+        Class<?> implementationClass = this.qualifierToImplementationClass.get(qualifier);
+        if(implementationClass == null) return null;
+
+        String implementationName = implementationClass.getName();
+
+        Class<?>[] interfaces = implementationClass.getInterfaces();
+        for(Class<?> iface: interfaces){
+            if(iface.getName().equals(interfaceName)){
+                return implementationClass;
+            }
+        }
+
+        System.out.println("Implementation matched by qualifier doesnt implement correct interface.");
+        return null;
     }
 
 
