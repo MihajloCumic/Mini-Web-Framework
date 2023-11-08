@@ -3,12 +3,16 @@ package diengine;
 import annotations.Autowired;
 import annotations.Compoenent;
 import annotations.Service;
+import dependencycontainer.DependencyContainer;
 import engine.controller.Controller;
 import engine.controller.ControllerContainer;
+import scanner.PackageScanner;
+import scanner.implementations.QualifierScanner;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,15 +21,20 @@ public class DIEngine {
     private static DIEngine instance;
     private ControllerContainer controllerContainer;
     private List<Object> singletonDependencyList;
+    private DependencyContainer dependencyContainer;
 
-    private DIEngine(){
+
+    private DIEngine(DependencyContainer dependencyContainer){
         this.controllerContainer = ControllerContainer.getInstance();
         this.singletonDependencyList = new ArrayList<>();
+        this.dependencyContainer = dependencyContainer;
+
+
     }
 
-    public static synchronized DIEngine getInstance(){
+    public static synchronized DIEngine getInstance(DependencyContainer dependencyContainer){
         if(instance == null){
-            instance = new DIEngine();
+            instance = new DIEngine(dependencyContainer);
         }
         return instance;
     }
@@ -81,6 +90,9 @@ public class DIEngine {
     private Object initializeDependency(Field field) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
         Class<?> fieldClass = field.getType();
+        if(fieldClass.isInterface() || Modifier.isAbstract(fieldClass.getModifiers())){
+            System.out.println(field.getName());
+        }
         Annotation service = fieldClass.getDeclaredAnnotation(Service.class);
         if(service != null){
             return initalizeSingletonDependency(field);
