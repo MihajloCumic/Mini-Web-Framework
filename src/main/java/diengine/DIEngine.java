@@ -43,9 +43,6 @@ public class DIEngine {
     public void injectDependencies() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         for(Controller controller: this.controllerContainer.getControllers()){
             Field[] controllerFields = controller.getControllerType().getDeclaredFields();
-            System.out.println(controller.getControllerType().getSimpleName());
-            System.out.println(this.singletonDependencyList);
-
             traverseThroughDependencies(controllerFields, controller.getController());
         }
     }
@@ -59,7 +56,6 @@ public class DIEngine {
 
             Object existingService = serviceIsAlreadyInitialized(field);
             Object fieldObject;
-
             if(existingService == null){
                 fieldObject = initializeDependency(field);
 
@@ -72,8 +68,6 @@ public class DIEngine {
             }
 
             injectDependency(field, object, fieldObject);
-
-
         }
         return;
     }
@@ -89,15 +83,12 @@ public class DIEngine {
     private Object initializeDependency(Field field) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Class<?> fieldClass = field.getType();
         //|| Modifier.isAbstract(fieldClass.getModifiers()) dodati za abstract klase
-        if(fieldClass.isInterface()){
-            System.out.println("Interfejs->->" + field.getName());
-            return initalizeInterface(field);
+        if(fieldClass.isInterface()) return initalizeInterface(field);
 
-        }
+
         Annotation service = fieldClass.getDeclaredAnnotation(Service.class);
-        if(service != null){
-            return initalizeSingletonDependency(field);
-        }
+        if(service != null) return initalizeSingletonDependency(field);
+
         Annotation component = fieldClass.getDeclaredAnnotation(Compoenent.class);
         if(component != null){
             Object componentObject = field.getType().getDeclaredConstructor().newInstance();

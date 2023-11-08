@@ -1,22 +1,17 @@
 package dependencycontainer;
 
 import annotations.Qualifier;
-import engine.controller.ControllerContainer;
-import org.eclipse.core.internal.registry.osgi.OSGIUtils;
 import scanner.PackageScanner;
 import scanner.implementations.QualifierScanner;
 
-import java.lang.annotation.Annotation;
 import java.util.*;
 
 public class DependencyContainer {
     private static DependencyContainer instance;
-    //private List<Class<?>> implementations;
     private Map<String, Class<?>> qualifierToImplementationClass;
     private PackageScanner qualifierScanner;
 
     private DependencyContainer(String packageName){
-        //this.implementations = new ArrayList<>();
         this.qualifierScanner = new QualifierScanner(packageName);
         this.qualifierToImplementationClass = new HashMap<>();
         this.findAllImplementations();
@@ -39,8 +34,6 @@ public class DependencyContainer {
             }
             this.qualifierToImplementationClass.put(qualifierValue, qualifier);
         }
-        System.out.println(qualifiers);
-        System.out.println(this.qualifierToImplementationClass);
     }
 
 
@@ -48,15 +41,12 @@ public class DependencyContainer {
         Class<?> implementationClass = this.qualifierToImplementationClass.get(qualifier);
         if(implementationClass == null) return null;
 
-        String implementationName = implementationClass.getName();
-
         Class<?>[] interfaces = implementationClass.getInterfaces();
         for(Class<?> iface: interfaces){
             if(iface.getName().equals(interfaceName)){
                 return implementationClass;
             }
         }
-
         System.out.println("Implementation matched by qualifier doesnt implement correct interface.");
         return null;
     }

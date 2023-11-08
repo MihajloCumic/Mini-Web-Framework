@@ -14,9 +14,6 @@ public class ControllerScanner {
         Reflections reflections = new Reflections(appPakcageName);
         Set<Class<?>> controllerClasses = reflections.getTypesAnnotatedWith(Controller.class);
 
-
-
-
         for(Class<?> controller: controllerClasses){
             controllerContainer.createController(controller);
         }

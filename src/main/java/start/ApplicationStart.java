@@ -16,16 +16,7 @@ public class ApplicationStart {
         String appPackageName = clazz.getPackageName();
         ControllerContainer controllerContainer = ControllerScanner.findControllers(appPackageName);
 
-
-        System.out.println("Ispis pronadjenih kontrolera:");
-        for(Controller controller: controllerContainer.getControllers()){
-            System.out.println("\t->"+controller.getControllerType().getSimpleName());
-        }
-
-        System.out.println("Ipis pronafjenih implementacija:");
         DependencyContainer dependencyContainer = DependencyContainer.getInstance(appPackageName);
-
-
         DIEngine diEngine = DIEngine.getInstance(dependencyContainer);
         try {
             diEngine.injectDependencies();
