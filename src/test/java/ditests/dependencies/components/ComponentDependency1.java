@@ -9,4 +9,9 @@ public class ComponentDependency1 {
     public ComponentDependency1(){
         System.out.println("Inicijalizovan je:: " + this.name);
     }
+
+    public void ispisi(){
+        System.out.println("Ispis iz " + this.name);
+
+    }
 }
