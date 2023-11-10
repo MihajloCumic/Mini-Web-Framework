@@ -4,6 +4,7 @@ package engine.controller;
 import annotations.Path;
 import exeptions.FrameWorkExeptions;
 import exeptions.messages.PathAlreadyExistsMessage;
+import exeptions.messages.PathWithMehodMessage;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -40,8 +41,8 @@ public class Controller {
             if(pathAnnotation == null) continue;
             String httpMethodName = this.AllowedHTTPMethodAnnotationName(method);
             if(httpMethodName == null){
-                System.out.println("\tThere must be http method annotation with path annotation.");
-                continue;
+                PathWithMehodMessage message = new PathWithMehodMessage(this.controllerType.getSimpleName(), method.getName());
+                throw new FrameWorkExeptions(message.toString());
             }
             String path = pathAnnotation.path();
             String methodAndPath = httpMethodName + ":" + path;

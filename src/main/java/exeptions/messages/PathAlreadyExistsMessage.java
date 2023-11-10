@@ -13,6 +13,6 @@ public class PathAlreadyExistsMessage {
 
     @Override
     public String toString() {
-        return "Path: " + this.path + ", already exists in controller " + this.controllerName + "in method " + this.methodName;
+        return "Path: " + this.path + " , already exists in controller " + this.controllerName + " in method " + this.methodName;
     }
 }

@@ -12,6 +12,6 @@ public class QualifierAlreadyExistsMessage {
 
     @Override
     public String toString() {
-        return "Class: " + this.qualifier1 + " and Class: " + this.qualifier2 + ", cannot have the same qualifier value : " + this.qualifierValue;
+        return "Class: " + this.qualifier1 + " and Class: " + this.qualifier2 + " , cannot have the same qualifier value : " + this.qualifierValue;
     }
 }

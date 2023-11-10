@@ -10,6 +10,6 @@ public class InnterfaceAttributeMustHaveQualifier {
 
     @Override
     public String toString() {
-        return "Attribute: " + this.interfaceName + "in controller " + this.controllerName + "does not have  @Qualifier annotation.";
+        return "Attribute: " + this.interfaceName + " in controller " + this.controllerName + " does not have  @Qualifier annotation.";
     }
 }

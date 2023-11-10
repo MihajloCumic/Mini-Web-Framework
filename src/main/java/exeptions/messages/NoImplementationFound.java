@@ -11,6 +11,6 @@ public class NoImplementationFound {
 
     @Override
     public String toString() {
-        return "Implementation of interface: " + this.interfaceName + "was not found using quialifier: " + this.qualifier;
+        return "Implementation of interface: " + this.interfaceName + " was not found using quialifier: " + this.qualifier;
     }
 }

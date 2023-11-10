@@ -11,6 +11,6 @@ public class AutowiredAttributeNotABean {
 
     @Override
     public String toString() {
-        return "Attribute of type: " + this.attributeClassName + "in controller: " + this.controllerName + " is not a Bean.";
+        return "Attribute of type: " + this.attributeClassName + " in controller: " + this.controllerName + " is not a Bean.";
     }
 }
