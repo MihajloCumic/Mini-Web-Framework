@@ -31,9 +31,8 @@ public class DependencyContainer {
         Set<Class<?>> qualifiers = this.qualifierScanner.findAnnotatedClassesInPackage();
         for(Class<?> qualifier: qualifiers){
             String qualifierValue = qualifier.getDeclaredAnnotation(Qualifier.class).value();
-            System.out.println(qualifierValue);
+
             if(this.qualifierToImplementationClass.containsKey(qualifierValue)){
-                System.out.println(qualifierValue);
                 String qualifier2 = this.qualifierToImplementationClass.get(qualifierValue).getSimpleName();
                 String qualifier1 = qualifier.getSimpleName();
                 QualifierAlreadyExistsMessage message = new QualifierAlreadyExistsMessage(qualifier1, qualifier2, qualifierValue);

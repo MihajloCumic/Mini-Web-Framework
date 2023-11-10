@@ -1,15 +1,14 @@
 package diengine;
 
-import annotations.Autowired;
-import annotations.Compoenent;
-import annotations.Qualifier;
-import annotations.Service;
+import annotations.*;
+import annotations.enums.BeanScope;
 import dependencycontainer.DependencyContainer;
 import engine.controller.Controller;
 import engine.controller.ControllerContainer;
 import exeptions.FrameWorkExeptions;
 import exeptions.messages.AutowiredAttributeNotABean;
 import exeptions.messages.InnterfaceAttributeMustHaveQualifier;
+import exeptions.messages.NoImplementationFound;
 import scanner.PackageScanner;
 import scanner.implementations.QualifierScanner;
 
@@ -17,6 +16,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +68,7 @@ public class DIEngine {
             }else{
                 fieldObject = existingService;
             }
+            printVerbose(field, fieldObject);
 
             injectDependency(field, object, fieldObject);
         }
@@ -85,22 +86,28 @@ public class DIEngine {
     private Object initializeDependency(Field field) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, FrameWorkExeptions {
         Class<?> fieldClass = field.getType();
 
-        if(fieldClass.isInterface()) return initalizeInterface(field);
-
+        if(fieldClass.isInterface()) {
+            fieldClass = initalizeInterface(field);
+        }
+        Annotation bean = fieldClass.getDeclaredAnnotation(Bean.class);
+        BeanScope scope = null;
+        if(bean != null){
+            scope = ((Bean)bean).scope();
+        }
 
         Annotation service = fieldClass.getDeclaredAnnotation(Service.class);
-        if(service != null) return initalizeSingletonDependency(field);
+        if(service != null || scope == BeanScope.SINGLETON) return initalizeSingletonDependency(fieldClass);
 
         Annotation component = fieldClass.getDeclaredAnnotation(Compoenent.class);
-        if(component != null){
-            Object componentObject = field.getType().getDeclaredConstructor().newInstance();
+        if(component != null || scope == BeanScope.PROTOTYPE){
+            Object componentObject = fieldClass.getDeclaredConstructor().newInstance();
             return componentObject;
         }
         AutowiredAttributeNotABean message = new AutowiredAttributeNotABean(fieldClass.getSimpleName(), field.getDeclaringClass().getSimpleName());
         throw new FrameWorkExeptions(message.toString());
     }
 
-    private Object initalizeInterface(Field field) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, FrameWorkExeptions {
+    private Class<?> initalizeInterface(Field field) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, FrameWorkExeptions {
         Qualifier qualifierAnnotation = field.getDeclaredAnnotation(Qualifier.class);
         if(qualifierAnnotation == null){
             InnterfaceAttributeMustHaveQualifier message = new InnterfaceAttributeMustHaveQualifier(field.getType().getSimpleName(), field.getDeclaringClass().getSimpleName());
@@ -109,23 +116,42 @@ public class DIEngine {
         String qualifier = qualifierAnnotation.value();
         String interfaceName = field.getType().getName();
         Class<?> implementationClass = this.dependencyContainer.getImplementationClassByQualifier(qualifier, interfaceName);
-        if(implementationClass == null) return null;
-        Object implementation = implementationClass.getDeclaredConstructor().newInstance();
-        return implementation;
+        if(implementationClass == null) {
+            NoImplementationFound message = new NoImplementationFound(qualifier, interfaceName);
+            throw new FrameWorkExeptions(message.toString());
+        }
+        //Stara implementacija:
+//        Object implementation = implementationClass.getDeclaredConstructor().newInstance();
+//        return implementation;
+        //Nova implementacija:
+        return implementationClass;
+
+
     }
 
-    private Object initalizeSingletonDependency(Field field) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    private void printVerbose(Field field,  Object fieldInstance){
+        boolean verbose = field.getDeclaredAnnotation(Autowired.class).verbose();
+        if(!verbose) return;
+        String type = fieldInstance.getClass().getSimpleName();
+        String name = field.getName();
+        String parentClass = field.getDeclaringClass().getSimpleName();
+        String timeDate = LocalDateTime.now().toString();
+        String hashCode = ((Integer)fieldInstance.hashCode()).toString();
+        System.out.println("Initialized <" + type + ">  <" + name + "> in <" + parentClass + "> on <" + timeDate + "> with <" + hashCode + ">");
+    }
+
+    private Object initalizeSingletonDependency(Class<?> fieldClass) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         if(this.singletonDependencyList.isEmpty()){
-            Object singletonObject = field.getType().getDeclaredConstructor().newInstance();
+            Object singletonObject = fieldClass.getDeclaredConstructor().newInstance();
             this.singletonDependencyList.add(singletonObject);
             return singletonObject;
         }
         for(Object object: this.singletonDependencyList){
-            if(object.getClass().getName().equals(field.getType().getName())){
+            if(object.getClass().getName().equals(fieldClass.getName())){
                 return object;
             }
         }
-        Object singletonObject = field.getType().getDeclaredConstructor().newInstance();
+        Object singletonObject = fieldClass.getDeclaredConstructor().newInstance();
         this.singletonDependencyList.add(singletonObject);
         return singletonObject;
     }

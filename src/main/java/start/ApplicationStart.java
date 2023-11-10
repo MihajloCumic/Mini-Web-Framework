@@ -19,7 +19,7 @@ public class ApplicationStart {
             DependencyContainer dependencyContainer = DependencyContainer.getInstance(appPackageName);
             DIEngine diEngine = DIEngine.getInstance(dependencyContainer);
             diEngine.injectDependencies();
-            Server.startServer();
+            //Server.startServer();
         } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException | FrameWorkExeptions e) {
             e.printStackTrace();
         }

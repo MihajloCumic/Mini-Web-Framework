@@ -12,14 +12,14 @@ import java.util.HashMap;
 public class MyController1 {
     private String name = "MyController1";
 
-    @Autowired
+    @Autowired(verbose = true)
     private ServiceDependency1 serviceDependency1;
-    @Autowired
+    @Autowired(verbose = true)
     @Qualifier(value="imp1")
     private InterfaceDependency1 interfaceDependency1;
 
     public MyController1(){
-        System.out.println("Inicijalizovan je:: " + this.name);
+        //System.out.println("Inicijalizovan je:: " + this.name);
     }
 
     public void testDependencies(){
@@ -53,4 +53,7 @@ public class MyController1 {
         return map;
     }
 
+    public InterfaceDependency1 getInterfaceDependency1() {
+        return interfaceDependency1;
+    }
 }

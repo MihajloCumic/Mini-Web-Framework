@@ -11,7 +11,7 @@ public class ServiceDependency1 {
     private ComponentDependency1 componentDependency1;
 
     public ServiceDependency1(){
-        System.out.println("Inicijalizovan je:: " + this.name);
+        //System.out.println("Inicijalizovan je:: " + this.name);
     }
 
     public void ispisi(){

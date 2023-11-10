@@ -1,11 +1,14 @@
 package errorhandling.tests;
 
+import annotations.enums.BeanScope;
+
 public class CustomErrorHandling {
     public static void main(String[] args) {
-        try{
-            myMethod();
-        } catch (MyError myError) {
-            myError.printStackTrace();
+        if(null == BeanScope.SINGLETON){
+            System.out.println("nije");
+        }
+        if(null != BeanScope.SINGLETON){
+            System.out.println("jeste");
         }
     }
 

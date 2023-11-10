@@ -34,6 +34,9 @@ public class TestDI {
         }
         System.out.println("DEPENDENCY TEST****************************\n\t-> MyController1:");
         myController1.testDependencies();
+        System.out.println(myController1.getInterfaceDependency1());
+        System.out.println(myController2.getInterfaceDependency1());
+
 
 
     }
