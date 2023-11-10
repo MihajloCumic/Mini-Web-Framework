@@ -38,12 +38,15 @@ public class ServerThread implements Runnable{
                 return;
             }
             //Response example
-            Map<String, Object> responseMap = new HashMap<>();
-            responseMap.put("route_location", request.getLocation());
-            responseMap.put("route_method", request.getMethod().toString());
-            responseMap.put("parameters", request.getParameters());
-            Response response = new JsonResponse(responseMap);
+//            Map<String, Object> responseMap = new HashMap<>();
+//            responseMap.put("route_location", request.getLocation());
+//            responseMap.put("route_method", request.getMethod().toString());
+//            responseMap.put("parameters", request.getParameters());
+//            Response response = new JsonResponse(responseMap);
             //Ovo iznad treba izmenititi
+
+            Map<String, Object> responseMap = makeResponseMap(request, null);
+            Response response = new JsonResponse(responseMap);
 
             out.println(response.render());
 
@@ -55,6 +58,15 @@ public class ServerThread implements Runnable{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private HashMap<String, Object> makeResponseMap(Request request, HashMap<String, Object> map){
+        if(map == null){
+            HashMap<String, Object> errorMap = new HashMap<>();
+            errorMap.put("error", "Could not find endpoint.");
+            return errorMap;
+        }
+        return map;
     }
 
     private Request generateRequest() throws IOException {

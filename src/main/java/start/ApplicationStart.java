@@ -5,6 +5,7 @@ import diengine.DIEngine;
 import engine.controller.Controller;
 import engine.controller.ControllerContainer;
 import engine.controller.scanner.ControllerScanner;
+import http.server.Server;
 import scanner.PackageScanner;
 import scanner.implementations.QualifierScanner;
 
@@ -20,15 +21,13 @@ public class ApplicationStart {
         DIEngine diEngine = DIEngine.getInstance(dependencyContainer);
         try {
             diEngine.injectDependencies();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException |  NoSuchMethodException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
+
+        Server.startServer();
+
+
 
     }
 }
