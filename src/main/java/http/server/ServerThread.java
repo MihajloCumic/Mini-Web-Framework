@@ -43,6 +43,7 @@ public class ServerThread implements Runnable{
             responseMap.put("route_method", request.getMethod().toString());
             responseMap.put("parameters", request.getParameters());
             Response response = new JsonResponse(responseMap);
+            //Ovo iznad treba izmenititi
 
             out.println(response.render());
 
@@ -77,12 +78,15 @@ public class ServerThread implements Runnable{
         }while(!command.trim().equals(""));
 
         if(method.equals(Method.POST)){
-            int contentLength = Integer.parseInt(header.get("content-length"));
+
+            int contentLength = Integer.parseInt(header.get("Content-Length"));
             char[] buff = new char[contentLength];
             in.read(buff, 0, contentLength);
             String parametersString = new String(buff);
 
+
             HashMap<String, String> postParameters = Helper.getParametersFromString(parametersString);
+
             for(String parameterName: postParameters.keySet()){
                 parameters.put(parameterName, postParameters.get(parameterName));
             }
