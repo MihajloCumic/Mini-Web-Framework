@@ -25,9 +25,7 @@ public class Controller {
             e.printStackTrace();
         }
 
-
         this.mapPathsToControllerMethods();
-
     }
 
     public  static Controller create(Class<?> controllerType) throws FrameWorkExeptions {
@@ -54,7 +52,6 @@ public class Controller {
                 throw new FrameWorkExeptions(message.toString());
             }
             this.pathToControllerMethod.put(httpMethodName + ":" + path, method);
-
         }
     }
 

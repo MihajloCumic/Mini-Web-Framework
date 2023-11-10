@@ -17,7 +17,6 @@ public class DependencyContainer {
         this.qualifierScanner = new QualifierScanner(packageName);
         this.qualifierToImplementationClass = new HashMap<>();
         this.findAllImplementations();
-
     }
 
     public static synchronized DependencyContainer getInstance(String packageName) throws FrameWorkExeptions {
@@ -38,6 +37,7 @@ public class DependencyContainer {
                 QualifierAlreadyExistsMessage message = new QualifierAlreadyExistsMessage(qualifier1, qualifier2, qualifierValue);
                 throw new FrameWorkExeptions(message.toString());
             }
+
             this.qualifierToImplementationClass.put(qualifierValue, qualifier);
         }
     }

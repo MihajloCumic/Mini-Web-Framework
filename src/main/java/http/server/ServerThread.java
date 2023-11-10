@@ -37,13 +37,6 @@ public class ServerThread implements Runnable{
                 socket.close();
                 return;
             }
-            //Response example
-//            Map<String, Object> responseMap = new HashMap<>();
-//            responseMap.put("route_location", request.getLocation());
-//            responseMap.put("route_method", request.getMethod().toString());
-//            responseMap.put("parameters", request.getParameters());
-//            Response response = new JsonResponse(responseMap);
-            //Ovo iznad treba izmenititi
 
             Map<String, Object> responseMap = makeResponseMap(request, null);
             Response response = new JsonResponse(responseMap);

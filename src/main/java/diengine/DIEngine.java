@@ -32,8 +32,6 @@ public class DIEngine {
         this.controllerContainer = ControllerContainer.getInstance();
         this.singletonDependencyList = new ArrayList<>();
         this.dependencyContainer = dependencyContainer;
-
-
     }
 
     public static synchronized DIEngine getInstance(DependencyContainer dependencyContainer){
@@ -109,21 +107,21 @@ public class DIEngine {
 
     private Class<?> initalizeInterface(Field field) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, FrameWorkExeptions {
         Qualifier qualifierAnnotation = field.getDeclaredAnnotation(Qualifier.class);
+
         if(qualifierAnnotation == null){
             InnterfaceAttributeMustHaveQualifier message = new InnterfaceAttributeMustHaveQualifier(field.getType().getSimpleName(), field.getDeclaringClass().getSimpleName());
             throw new FrameWorkExeptions(message.toString());
         }
+
         String qualifier = qualifierAnnotation.value();
         String interfaceName = field.getType().getName();
         Class<?> implementationClass = this.dependencyContainer.getImplementationClassByQualifier(qualifier, interfaceName);
+
         if(implementationClass == null) {
             NoImplementationFound message = new NoImplementationFound(qualifier, interfaceName);
             throw new FrameWorkExeptions(message.toString());
         }
-        //Stara implementacija:
-//        Object implementation = implementationClass.getDeclaredConstructor().newInstance();
-//        return implementation;
-        //Nova implementacija:
+
         return implementationClass;
 
 
@@ -146,11 +144,13 @@ public class DIEngine {
             this.singletonDependencyList.add(singletonObject);
             return singletonObject;
         }
+
         for(Object object: this.singletonDependencyList){
             if(object.getClass().getName().equals(fieldClass.getName())){
                 return object;
             }
         }
+
         Object singletonObject = fieldClass.getDeclaredConstructor().newInstance();
         this.singletonDependencyList.add(singletonObject);
         return singletonObject;

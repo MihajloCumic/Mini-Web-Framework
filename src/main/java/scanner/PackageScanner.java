@@ -1,7 +1,7 @@
 package scanner;
 
 
-import annotations.Controller;
+
 import org.reflections.Reflections;
 
 import java.lang.annotation.Annotation;

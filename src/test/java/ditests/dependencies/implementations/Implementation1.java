@@ -19,4 +19,11 @@ public class Implementation1 implements InterfaceDependency1 {
     public void ispisi1() {
         System.out.println("Ispis iz Implementation1.");
     }
+
+    @Override
+    public String vratiNesto() {
+        return this.name;
+    }
+
+
 }

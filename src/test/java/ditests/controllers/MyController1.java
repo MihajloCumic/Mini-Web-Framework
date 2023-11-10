@@ -32,6 +32,7 @@ public class MyController1 {
     public HashMap<String, Object> httpMethod1(){
         HashMap<String, Object> map = new HashMap<>();
         map.put("nasao", "putanju /test");
+        map.put("iz inteface-a", this.interfaceDependency1.vratiNesto());
         return map;
     }
 
