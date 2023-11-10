@@ -2,6 +2,8 @@ package engine.controller;
 
 
 import annotations.Path;
+import exeptions.FrameWorkExeptions;
+import exeptions.messages.PathAlreadyExistsMessage;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +16,7 @@ public class Controller {
     private final Map<String, Method> pathToControllerMethod;
     private  Object controller;
 
-    private Controller(Class<?> controllerType){
+    private Controller(Class<?> controllerType) throws FrameWorkExeptions {
         this.controllerType = controllerType;
         this.pathToControllerMethod = new HashMap<>();
         try {
@@ -23,14 +25,16 @@ public class Controller {
             e.printStackTrace();
         }
 
+
         this.mapPathsToControllerMethods();
+
     }
 
-    public  static Controller create(Class<?> controllerType){
+    public  static Controller create(Class<?> controllerType) throws FrameWorkExeptions {
         return new Controller(controllerType);
     }
 
-    private void mapPathsToControllerMethods(){
+    private void mapPathsToControllerMethods() throws FrameWorkExeptions {
         Method[] methods = this.controllerType.getDeclaredMethods();
 
         for(Method method: methods){
@@ -42,8 +46,13 @@ public class Controller {
                 continue;
             }
             String path = pathAnnotation.path();
-            //Dodati proveru da li vec postoji putanja sa http metodom u kontroleru
-            //i dali vec neki kontroler ima tu istu hhtp metodu sa putanjom
+            String methodAndPath = httpMethodName + ":" + path;
+
+            if(this.pathToControllerMethod.get(methodAndPath) != null){
+                Method methodWithPath = this.pathToControllerMethod.get(methodAndPath);
+                PathAlreadyExistsMessage message = new PathAlreadyExistsMessage(methodAndPath, this.controllerType.getSimpleName(), methodWithPath.getName());
+                throw new FrameWorkExeptions(message.toString());
+            }
             this.pathToControllerMethod.put(httpMethodName + ":" + path, method);
 
         }

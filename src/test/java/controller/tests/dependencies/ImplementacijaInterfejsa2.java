@@ -4,7 +4,7 @@ import annotations.Compoenent;
 import annotations.Qualifier;
 
 @Compoenent
-@Qualifier(value="imp2")
+@Qualifier(value="imp1")
 public class ImplementacijaInterfejsa2 implements Interfejs2{
     private String name = "ImplementacijaInterfejsa2";
 

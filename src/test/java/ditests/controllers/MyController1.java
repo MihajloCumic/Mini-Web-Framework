@@ -35,6 +35,15 @@ public class MyController1 {
         return map;
     }
 
+    //Baca exeption za istu putanju i metodu
+//    @GET
+//    @Path(path = "/test")
+//    public HashMap<String, Object> httpMethod11(){
+//        HashMap<String, Object> map = new HashMap<>();
+//        map.put("nasao", "putanju /test");
+//        return map;
+//    }
+
     @POST
     @Path(path="/test")
     public HashMap<String, Object> httpMethod2(Request request){

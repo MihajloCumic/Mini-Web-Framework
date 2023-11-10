@@ -1,5 +1,6 @@
 package engine.controller;
 
+import exeptions.FrameWorkExeptions;
 import http.framework.request.Request;
 
 import java.lang.reflect.InvocationTargetException;
@@ -23,7 +24,7 @@ public class ControllerContainer {
         return instance;
     }
 
-    public void createController(Class<?> controllerType){
+    public void createController(Class<?> controllerType) throws FrameWorkExeptions {
         if(!isControllerUnique(controllerType)) return;
         Controller controller = Controller.create(controllerType);
         this.controllers.add(controller);

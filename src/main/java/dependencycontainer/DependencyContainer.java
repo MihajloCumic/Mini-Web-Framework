@@ -1,6 +1,8 @@
 package dependencycontainer;
 
 import annotations.Qualifier;
+import exeptions.FrameWorkExeptions;
+import exeptions.messages.QualifierAlreadyExistsMessage;
 import scanner.PackageScanner;
 import scanner.implementations.QualifierScanner;
 
@@ -11,26 +13,31 @@ public class DependencyContainer {
     private Map<String, Class<?>> qualifierToImplementationClass;
     private PackageScanner qualifierScanner;
 
-    private DependencyContainer(String packageName){
+    private DependencyContainer(String packageName) throws FrameWorkExeptions {
         this.qualifierScanner = new QualifierScanner(packageName);
         this.qualifierToImplementationClass = new HashMap<>();
         this.findAllImplementations();
+
     }
 
-    public static synchronized DependencyContainer getInstance(String packageName){
+    public static synchronized DependencyContainer getInstance(String packageName) throws FrameWorkExeptions {
         if(instance == null){
             instance = new DependencyContainer(packageName);
         }
         return instance;
     }
 
-    private void findAllImplementations(){
+    private void findAllImplementations() throws FrameWorkExeptions {
         Set<Class<?>> qualifiers = this.qualifierScanner.findAnnotatedClassesInPackage();
         for(Class<?> qualifier: qualifiers){
             String qualifierValue = qualifier.getDeclaredAnnotation(Qualifier.class).value();
+            System.out.println(qualifierValue);
             if(this.qualifierToImplementationClass.containsKey(qualifierValue)){
-                System.out.println("Alraedy contains implemenntation with that qualifier.");
-                continue;
+                System.out.println(qualifierValue);
+                String qualifier2 = this.qualifierToImplementationClass.get(qualifierValue).getSimpleName();
+                String qualifier1 = qualifier.getSimpleName();
+                QualifierAlreadyExistsMessage message = new QualifierAlreadyExistsMessage(qualifier1, qualifier2, qualifierValue);
+                throw new FrameWorkExeptions(message.toString());
             }
             this.qualifierToImplementationClass.put(qualifierValue, qualifier);
         }

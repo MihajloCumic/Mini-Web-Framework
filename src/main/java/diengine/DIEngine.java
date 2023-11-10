@@ -7,6 +7,9 @@ import annotations.Service;
 import dependencycontainer.DependencyContainer;
 import engine.controller.Controller;
 import engine.controller.ControllerContainer;
+import exeptions.FrameWorkExeptions;
+import exeptions.messages.AutowiredAttributeNotABean;
+import exeptions.messages.InnterfaceAttributeMustHaveQualifier;
 import scanner.PackageScanner;
 import scanner.implementations.QualifierScanner;
 
@@ -40,19 +43,18 @@ public class DIEngine {
         return instance;
     }
 
-    public void injectDependencies() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public void injectDependencies() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, FrameWorkExeptions {
         for(Controller controller: this.controllerContainer.getControllers()){
             Field[] controllerFields = controller.getControllerType().getDeclaredFields();
             traverseThroughDependencies(controllerFields, controller.getController());
         }
     }
 
-    private void traverseThroughDependencies(Field[] fields, Object object) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    private void traverseThroughDependencies(Field[] fields, Object object) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, FrameWorkExeptions {
 
         for(Field field: fields){
             Annotation annotation = field.getAnnotation(Autowired.class);
             if(annotation == null) continue;
-            //Field[] fieldFields = field.getType().getDeclaredFields();
 
             Object existingService = serviceIsAlreadyInitialized(field);
             Object fieldObject;
@@ -80,9 +82,9 @@ public class DIEngine {
         field.setAccessible(fieldsAccessability);
     }
 
-    private Object initializeDependency(Field field) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    private Object initializeDependency(Field field) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, FrameWorkExeptions {
         Class<?> fieldClass = field.getType();
-        //|| Modifier.isAbstract(fieldClass.getModifiers()) dodati za abstract klase
+
         if(fieldClass.isInterface()) return initalizeInterface(field);
 
 
@@ -94,14 +96,15 @@ public class DIEngine {
             Object componentObject = field.getType().getDeclaredConstructor().newInstance();
             return componentObject;
         }
-        return null;
+        AutowiredAttributeNotABean message = new AutowiredAttributeNotABean(fieldClass.getSimpleName(), field.getDeclaringClass().getSimpleName());
+        throw new FrameWorkExeptions(message.toString());
     }
 
-    private Object initalizeInterface(Field field) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    private Object initalizeInterface(Field field) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, FrameWorkExeptions {
         Qualifier qualifierAnnotation = field.getDeclaredAnnotation(Qualifier.class);
         if(qualifierAnnotation == null){
-            System.out.println("Mora da ima qualifier uz sebe.");
-            return null;
+            InnterfaceAttributeMustHaveQualifier message = new InnterfaceAttributeMustHaveQualifier(field.getType().getSimpleName(), field.getDeclaringClass().getSimpleName());
+            throw new FrameWorkExeptions(message.toString());
         }
         String qualifier = qualifierAnnotation.value();
         String interfaceName = field.getType().getName();
