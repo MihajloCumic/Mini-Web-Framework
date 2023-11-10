@@ -4,6 +4,9 @@ package ditests.controllers;
 import annotations.*;
 import ditests.dependencies.ServiceDependency1;
 import ditests.dependencies.specifications.InterfaceDependency1;
+import http.framework.request.Request;
+
+import java.util.HashMap;
 
 @Controller
 public class MyController1 {
@@ -25,13 +28,20 @@ public class MyController1 {
     }
 
     @GET
-    @Path(path = "/mycontroller1/metoda1")
-    public void httpMethod1(){
-
+    @Path(path = "/test")
+    public HashMap<String, Object> httpMethod1(){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("nasao", "putanju /test");
+        return map;
     }
 
     @POST
-    @Path(path="/mycontroller1/metoda2")
-    public void httpMethod2(){}
+    @Path(path="/test")
+    public HashMap<String, Object> httpMethod2(Request request){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("kontoler", this.name);
+        map.put("params", request.getParameters());
+        return map;
+    }
 
 }

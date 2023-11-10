@@ -1,6 +1,11 @@
 package engine.controller;
 
+import http.framework.request.Request;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ControllerContainer {
@@ -32,6 +37,23 @@ public class ControllerContainer {
         }
         return true;
 
+    }
+
+    public HashMap<String, Object> findAndCallMethodWithPath(String path, Request request) throws InvocationTargetException, IllegalAccessException {
+        for(Controller controller: this.controllers){
+            if(controller.getPathToControllerMethod().get(path) != null){
+                Method method = controller.getPathToControllerMethod().get(path);
+                Object controllerInstance =  controller.getController();
+                int paramNumber = method.getParameterCount();
+
+                if(paramNumber == 0) return (HashMap<String, Object>) method.invoke(controllerInstance);
+                if(paramNumber == 1) return (HashMap<String, Object>) method.invoke(controllerInstance, request);
+                return null;
+
+            }
+        }
+
+        return null;
     }
 
     public List<Controller> getControllers() {
